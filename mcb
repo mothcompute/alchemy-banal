@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# mcb
+# AWFUL build system
+# dont laugh at me
+
+isf() {
+        LC_ALL=C type $1 2>&1 | grep -q 'function'
+}
+
+. ./mcbs
+
+[ ! -z "$1" ] && isf $1 && $1
+
+[ -z "$SOURCES" ] && echo "provide \$SOURCES" && exit 1
+[ -z "$OUTPUT" ] && echo "provide \$OUTPUT" && exit 1
+[ -z "$COMPILER" ] && echo "\$COMPILER undefined. defaulting to cc" && COMPILER=cc
+
+LINKS=""
+ECODE=""
+
+if isf mcb_build_hook; then
+	mcb_build_hook 2> /tmp/mcbs_err.$(basename $OUTPUT)
+	ECODE=$?
+else
+	$COMPILER $SOURCES $FLAGS -o $OUTPUT 2> /tmp/mcbs_err.$(basename $OUTPUT)
+	ECODE=$?
+fi
+
+[ ! "$ECODE" = 0 ] && echo "build error" && [ ! -z "$MCB_SHOW" ] && cat /tmp/mcbs_err.$(basename $OUTPUT) && exit 1
+isf mcb_post_hook && mcb_post_hook
+
+[ ! -z "$MCB_SHOW" ] && cat /tmp/mcbs_err.$(basename $OUTPUT)
+[ ! -z "$MCB_RUN" ] && ./$OUTPUT $MCB_RUN
+exit 0
