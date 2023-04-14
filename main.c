@@ -201,6 +201,26 @@ int main(int argc, char** argv) {
 	memset(board, 0xE, 72);
 	board[31] = 0x2F;
 
+	/* bug test a
+		for(int x = 1; x < 9; x++) board[x] = 0x2F;
+		for(int x = 1; x < 8; x++) board[x*9] = 0x2F;
+	*/
+
+	/* bug test b - edge test r
+		for(int x = 0; x < 8; x++) board[x*9] = 0x2F;
+	*/
+
+	/* bug test c - edge test l
+		for(int x = 1; x < 9; x++) board[x*9-1] = 0x2F;
+	*/
+
+	/* bug test d - edge test tb
+		for(int x = 1; x < 9; x++) {
+			board[x] = 0x2F;
+			board[9*7-1+x] = 0x2F;
+		}
+	*/
+
 	// rng for runes
 	srand(time(NULL));
 

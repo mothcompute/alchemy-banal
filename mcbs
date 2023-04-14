@@ -1,0 +1,20 @@
+SOURCES=main.c
+FLAGS="-lxmp -lpulse-simple -O3"
+OUTPUT=alchemy-banal
+
+fembgen() {
+	SOURCES=fembgen.c
+	OUTPUT=fembgen
+	FLAGS=
+}
+
+getmusic() {
+	[ ! -f NOFACE.S3M ] && wget "https://api.modarchive.org/downloads.php?moduleid=48952" -O NOFACE.S3M
+	[ ! -f ./fembgen ] && mcb ./fembgen
+	./fembgen NOFACE.S3M module modsize > music.h
+	exit
+}
+
+all() {
+	[ ! -f music.h ] && mcb getmusic
+}
