@@ -4,6 +4,8 @@
 # AWFUL build system
 # dont laugh at me
 
+MCB=$0
+
 isf() {
         LC_ALL=C type $1 2>&1 | grep -q 'function'
 }
